@@ -1,52 +1,107 @@
 const db = require("../firesrtore/db");
-const { format } = require("date-fns");
+const timestamp = new Date();
 
+/**
+ * @param data
+ * @returns {Promise<{success:boolean,data:{id:string}}>}
+ */
 const productRef = db.collection("products");
-const date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
 const create = async (data) => {
   try {
-    data.createdAt = date;
-    data.updatedAt = date;
-    const product = await productRef.add(data);
-    const getProduct = await product.get();
-    return { id: getProduct.id, ...getProduct.data() };
+    const createdAt = timestamp;
+    const updatedAt = timestamp;
+    const query = await productRef.add({ ...data, createdAt, updatedAt });
+    if (query.id) {
+      return {
+        id: query.id,
+        ...data,
+      };
+    }
   } catch (error) {
     console.log(error);
   }
 };
 
-const update = (dataUpdate) => {
+/**
+ * @param dataUpdate
+ * @returns {Promise<boolean>}
+ */
+const update = async (dataUpdate) => {
   try {
-    dataUpdate.updatedAt = date;
+    dataUpdate.updatedAt = timestamp;
+    const doc = await productRef.doc(dataUpdate.id).get();
+    if (!doc.exists) throw new Error("Not found with that id!");
     productRef.doc(dataUpdate.id).update(dataUpdate.data);
+    return true;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+/**
+ *@param {Object} params
+ * @param {number} params.limit
+ * @param {string} params.sort
+ * @param {string} params.fields
+ * @returns {Promise<[{id:string, image:string, product:string, color:string, name:string, description:string, createdAt: Date, updatedAt: Date}]>}
+ */
+const getAll = async ({ limit, sort, fields }) => {
+  try {
+    let query = productRef;
+    if (sort === "asc") {
+      query = query.orderBy("price", "asc");
+    }
+    if (sort === "desc") {
+      query = query.orderBy("price", "desc");
+    }
+    if (limit) {
+      query = query.limit(parseInt(limit));
+    }
+    if (fields) {
+      const listFields = fields.split(",");
+      query = query.select(...listFields);
+    }
+    const result = await query.get();
+    return result.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
   } catch (error) {
     console.log(error);
   }
 };
 
-const getAll = () => {
+/**
+ *
+ * @param {string} id
+ * @returns {Promise<boolean>}
+ */
+const destroy = async (id) => {
   try {
-    const products = productRef.get();
-    return products;
+    const doc = await productRef.doc(id).get();
+    if (!doc.exists) throw new Error("Not found with that id!");
+    productRef.doc(id).delete();
+    return true;
   } catch (error) {
     console.log(error);
+    throw new Error(error.message);
   }
 };
 
-const destroy = (id) => {
+/**
+ *
+ * @param {string} id
+ * @returns {Promise<{id:string, image:string, product:string, color:string, name:string, description:string, createdAt: Date, updatedAt: Date}>}
+ */
+const show = async (id) => {
   try {
-    return productRef.doc(id).delete();
+    const doc = await productRef.doc(id).get();
+    if (!doc.exists) throw new Error("Not found with that id!");
+    return doc.data();
   } catch (error) {
     console.log(error);
-  }
-};
-
-const show = (id) => {
-  try {
-    const product = productRef.doc(id).get();
-    return product;
-  } catch (error) {
-    console.log(error);
+    throw new Error(error.message);
   }
 };
 

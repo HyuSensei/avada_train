@@ -2,21 +2,25 @@ const todoRepository = require("../../database/todo/todoRepository");
 
 const createTodo = async (ctx) => {
   const addData = ctx.request.body;
-  todoRepository.create(addData);
-  return (ctx.body = {
-    success: true,
-    message: "Create todo success",
-  });
+  const todo = todoRepository.create(addData);
+  if (todo) {
+    return (ctx.body = {
+      success: true,
+      message: "Create todo success",
+      todo,
+    });
+  }
 };
 
 const updateTodo = async (ctx) => {
   const dataBody = ctx.request.body;
   const id = ctx.params.id;
   const dataUpdate = { id, isCompleted: dataBody.isCompleted };
-  todoRepository.update(dataUpdate);
+  const todos = todoRepository.update(dataUpdate);
   return (ctx.body = {
     success: true,
     message: "Update todo success",
+    todos: todos,
   });
 };
 
@@ -39,20 +43,22 @@ const getAll = async (ctx) => {
 
 const updateTodoSeleted = async (ctx) => {
   const updateData = ctx.request.body;
-  todoRepository.updateSeleted(updateData);
+  const todos = todoRepository.updateSeleted(updateData);
   return (ctx.body = {
     success: true,
     message: "Update todo success",
+    todos,
   });
 };
 
 const deleteTodoSeleted = async (ctx) => {
   const deleteData = ctx.request.body;
   console.log(deleteData);
-  todoRepository.deleteSelected(deleteData.selected);
+  const todos = todoRepository.deleteSelected(deleteData.selected);
   return (ctx.body = {
     success: true,
     message: "Delete todo success",
+    todos,
   });
 };
 

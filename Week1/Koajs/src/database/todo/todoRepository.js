@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { data: todo } = require("./todo.json");
+const { data: todos } = require("./todo.json");
 const ultils = require("../../../ultils/generate");
 const path = require("path");
 
@@ -14,54 +14,66 @@ const create = (data) => {
     createdAt,
     updatedAt,
   };
-  const listWork = [addData, ...todo];
+  const newTodo = [addData, ...todos];
   const filePath = path.join(__dirname, "todo.json");
-  return fs.writeFileSync(
-    filePath,
-    JSON.stringify({
-      data: listWork,
-    })
-  );
-};
-
-const update = (data) => {
-  const indexTodo = todo.findIndex((item) => item.id === parseInt(data.id));
-  console.log(data);
-  if (indexTodo !== -1) {
-    if (data.isCompleted === true) {
-      todo[indexTodo] = { ...todo[indexTodo], isCompleted: true, updatedAt };
-    } else {
-      todo[indexTodo] = { ...todo[indexTodo], isCompleted: false, updatedAt };
-    }
-    const filePath = path.join(__dirname, "todo.json");
-    return fs.writeFileSync(
-      filePath,
-      JSON.stringify({
-        data: todo,
-      })
-    );
-  }
-};
-
-const getAll = () => {
-  return todo;
-};
-
-const destroy = (id) => {
-  const newTodo = todo.filter((item) => item.id !== parseInt(id));
-  const filePath = path.join(__dirname, "todo.json");
-  return fs.writeFileSync(
+  fs.writeFileSync(
     filePath,
     JSON.stringify({
       data: newTodo,
     })
   );
+  const todo = newTodo.find((item) => item.id === parseInt(id));
+  console.log("todo:", todo);
+  return todo;
+};
+
+const update = (data) => {
+  const indextodos = todos.findIndex((item) => item.id === parseInt(data.id));
+  console.log(data);
+  if (indextodos !== -1) {
+    if (data.isCompleted === true) {
+      todos[indextodos] = {
+        ...todos[indextodos],
+        isCompleted: true,
+        updatedAt,
+      };
+    } else {
+      todos[indextodos] = {
+        ...todos[indextodos],
+        isCompleted: false,
+        updatedAt,
+      };
+    }
+    const filePath = path.join(__dirname, "todo.json");
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify({
+        data: todos,
+      })
+    );
+    return todos;
+  }
+};
+
+const getAll = () => {
+  return todos;
+};
+
+const destroy = (id) => {
+  const newtodos = todos.filter((item) => item.id !== parseInt(id));
+  const filePath = path.join(__dirname, "todo.json");
+  return fs.writeFileSync(
+    filePath,
+    JSON.stringify({
+      data: newtodos,
+    })
+  );
 };
 
 const updateSeleted = (data) => {
-  const listWork = data.selected;
-  const updateTodo = todo.map((item) => {
-    if (listWork.includes(item.id)) {
+  const listTodo = data.selected;
+  const updateTodos = todos.map((item) => {
+    if (listTodo.includes(item.id)) {
       return {
         ...item,
         isCompleted: data.isCompleted,
@@ -71,23 +83,25 @@ const updateSeleted = (data) => {
     return item;
   });
   const filePath = path.join(__dirname, "todo.json");
-  return fs.writeFileSync(
+  fs.writeFileSync(
     filePath,
     JSON.stringify({
-      data: updateTodo,
+      data: updateTodos,
     })
   );
+  return updateTodos;
 };
 
 const deleteSelected = (seleted) => {
-  const newTodo = todo.filter((item) => !seleted.includes(item.id));
+  const newtodos = todos.filter((item) => !seleted.includes(item.id));
   const filePath = path.join(__dirname, "todo.json");
-  return fs.writeFileSync(
+  fs.writeFileSync(
     filePath,
     JSON.stringify({
-      data: newTodo,
+      data: newtodos,
     })
   );
+  return newtodos;
 };
 
 module.exports = {

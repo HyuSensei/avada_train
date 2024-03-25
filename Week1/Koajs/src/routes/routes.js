@@ -27,7 +27,7 @@ router.delete("/api/products/:id", productHandle.destroy);
 //Todo
 router.get("/api/todos", todoHandler.getAll);
 router.post("/api/todos", todoHandler.createTodo);
-router.patch("/api/todos", todoHandler.updateTodoSeleted);
+router.put("/api/todos", todoHandler.updateTodoSeleted);
 router.put("/api/todos/:id", todoHandler.updateTodo);
 router.delete("/api/todos/:id", todoHandler.deleteTodo);
 router.post("/api/todos/delete", todoHandler.deleteTodoSeleted);

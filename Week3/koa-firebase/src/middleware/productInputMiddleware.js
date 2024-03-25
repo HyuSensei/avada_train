@@ -2,7 +2,7 @@ const yup = require("yup");
 
 const createProduct = async (ctx, next) => {
   try {
-    const postData = ctx.request.body;
+    const postData = ctx.req.body;
     let schema = yup.object().shape({
       name: yup.string().required(),
       price: yup.number().required(),
@@ -12,7 +12,6 @@ const createProduct = async (ctx, next) => {
       image: yup.string().required(),
     });
     await schema.validate(postData);
-    // console.log("check:", check);
     await next();
   } catch (e) {
     ctx.status = 400;
