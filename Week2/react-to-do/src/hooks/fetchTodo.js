@@ -9,15 +9,17 @@ const useFetch = (url) => {
   useEffect(() => {
     const getAll = async () => {
       try {
-        const res = await axios.get(url);
-        if (res.data && res.data.todos.length > 0) {
-          setData(res.data.todos);
-          setIsLoading(false);
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.todos.length > 0) {
+          setData(data.todos);
           setIsError(false);
         }
       } catch (error) {
         setIsError(true);
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
     getAll();

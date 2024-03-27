@@ -2,7 +2,7 @@
 
 name = "Sales Notifications"
 client_id = "035d980b7a99b35949de717301bfe423"
-application_url = "https://herb-formation-treated-inspector.trycloudflare.com/auth/shopify"
+application_url = "https://brown-could-wine-wishlist.trycloudflare.com/auth/shopify"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://herb-formation-treated-inspector.trycloudflare.com/auth/shopify/callback",
-  "https://herb-formation-treated-inspector.trycloudflare.com/authSa/shopify/callback",
-  "https://herb-formation-treated-inspector.trycloudflare.com/auth/shopify/embed/callback",
+  "https://brown-could-wine-wishlist.trycloudflare.com/auth/shopify/callback",
+  "https://brown-could-wine-wishlist.trycloudflare.com/authSa/shopify/callback",
+  "https://brown-could-wine-wishlist.trycloudflare.com/auth/shopify/embed/callback",
   "https://localhost:3000/auth/shopify/callback",
   "https://localhost:3000/authSa/shopify/callback",
   "https://localhost:3000/auth/shopify/embed/callback"

@@ -1,6 +1,5 @@
 const db = require("../firesrtore/db");
 const todoRef = db.collection("todos");
-const timestamp = new Date();
 
 /**
  *
@@ -8,17 +7,15 @@ const timestamp = new Date();
  * @returns {Promise<{id:string, title:string, isCompleted: boolean, createdAt: Date, updatedAt: Date}>}
  */
 const create = async (data) => {
-  try {
-    data.createdAt = data.updatedAt = timestamp;
-    const query = await todoRef.add(data);
-    if (query.id) {
-      return {
-        id: query.id,
-        ...data,
-      };
-    }
-  } catch (error) {
-    console.log(error);
+  const timestamp = new Date();
+  const createdAt = timestamp;
+  const updatedAt = timestamp;
+  const query = await todoRef.add({ ...data, createdAt, updatedAt });
+  if (query.id) {
+    return {
+      id: query.id,
+      ...data,
+    };
   }
 };
 
@@ -26,26 +23,19 @@ const create = async (data) => {
  * @param {Object} params
  * @param {string} params.id
  * @param {boolean} params.isCompleted
- * @returns {Promise<boolean>}
+ * @returns {Promise}
  */
 const update = async ({ id, isCompleted }) => {
-  try {
-    const doc = await todoRef.doc(id).get();
-    const updatedAt = timestamp;
-    if (!doc.exists) throw new Error("Not found with that id!");
-    todoRef.doc(id).update({ isCompleted, updatedAt });
-    return true;
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
-  }
+  const timestamp = new Date();
+  const updatedAt = timestamp;
+  return await todoRef.doc(id).update({ isCompleted, updatedAt });
 };
 
 /**
  *
  * @returns {Promise<[{id:string, title:string, isCompleted:boolean, createdAt:Date, updatedAt:Date}]>}
  */
-const getAll = async () => {
+const getList = async () => {
   try {
     const query = await todoRef.orderBy("createdAt", "desc").get();
     return query.docs.map((doc) => ({
@@ -54,64 +44,49 @@ const getAll = async () => {
     }));
   } catch (error) {
     console.log(error);
+    return [];
   }
 };
 
 /**
  *
  * @param {string} id
- * @returns {Promise<boolean>}
+ * @returns {Promise}
  */
 const destroy = async (id) => {
-  try {
-    const doc = await todoRef.doc(id).get();
-    if (!doc.exists) throw new Error("Not found with that id!");
-    todoRef.doc(id).delete();
-    return true;
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
-  }
+  return await todoRef.doc(id).delete();
 };
 
 /**
  * @param {*} data
- * @returns {Promise<boolean>}
+ * @returns {Promise}
  */
 const updateSeleted = async (data) => {
-  try {
-    const selected = data.selected;
-    selected.forEach((id) => {
-      const updatedAt = timestamp;
-      todoRef
-        .doc(id)
-        .update({ isCompleted: data.isCompleted, updatedAt: updatedAt });
-    });
-    return true;
-  } catch (error) {
-    console.log(error);
-  }
+  const timestamp = new Date();
+  const selected = data.selected;
+  return selected.forEach(async (id) => {
+    const updatedAt = timestamp;
+    await todoRef
+      .doc(id)
+      .update({ isCompleted: data.isCompleted, updatedAt: updatedAt });
+  });
 };
 
 /**
  * @param {Array} selected
- * @returns {Promise<boolean>}
+ * @returns {Promise}
  */
 const deleteSelected = async (selected) => {
-  try {
-    selected.forEach((id) => {
-      todoRef.doc(id).delete();
-    });
-    return true;
-  } catch (error) {
-    console.log(error);
-  }
+  console.log("selected:", selected);
+  selected.forEach((id) => {
+    todoRef.doc(id).delete();
+  });
 };
 
 module.exports = {
   create,
   update,
-  getAll,
+  getList,
   destroy,
   updateSeleted,
   deleteSelected,

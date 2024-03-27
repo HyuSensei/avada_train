@@ -5,7 +5,6 @@ export const getSettingByShopId = async ctx => {
   try {
     const shopID = getCurrentShop(ctx);
     const setting = await getByShopId(shopID);
-    console.log(shopID);
     if (setting) {
       return (ctx.body = {
         success: true,
@@ -16,6 +15,7 @@ export const getSettingByShopId = async ctx => {
   } catch (error) {
     ctx.body = {
       success: false,
+      data: {},
       error: error.message
     };
   }
@@ -24,13 +24,11 @@ export const getSettingByShopId = async ctx => {
 export const updateSettingByShopId = async ctx => {
   try {
     const data = ctx.req.body;
-    const res = await updateSetting(data);
-    if (res) {
-      ctx.body = {
-        success: true,
-        message: 'Update setting success'
-      };
-    }
+    await updateSetting(data);
+    return (ctx.body = {
+      success: true,
+      message: 'Update setting success'
+    });
   } catch (error) {
     ctx.body = {
       success: false,

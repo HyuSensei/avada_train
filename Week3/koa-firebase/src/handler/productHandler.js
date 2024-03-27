@@ -7,15 +7,14 @@ const productRepository = require("../repository/productRepository");
  */
 const createProduct = async (ctx) => {
   try {
-    const product = await productRepository.create(ctx.request.body);
-    console.log(product);
-    if (product) {
-      return (ctx.body = {
-        success: true,
-        message: "Create product successfully",
-        product: product,
-      });
-    }
+    const productId = await productRepository.create(ctx.request.body);
+    return (ctx.body = {
+      success: true,
+      message: "Create product successfully",
+      product: {
+        id: productId,
+      },
+    });
   } catch (error) {
     return (ctx.body = {
       success: false,
@@ -34,28 +33,26 @@ const getAllProduct = async (ctx) => {
     let limit = ctx.query["limit"];
     let sort = ctx.query["sort"];
     let fields = ctx.query["fields"];
-    if (!limit) {
-      limit = 10;
-    }
-    if (!sort) {
-      sort = "desc";
-    }
-    if (!fields) {
-      fields = "";
-    }
+    // if (!limit) {
+    //   limit = 10;
+    // }
+    // if (!sort) {
+    //   sort = "desc";
+    // }
+    // if (!fields) {
+    //   fields = "";
+    // }
     const dataQuery = {
       limit,
       sort,
       fields,
     };
-    const products = await productRepository.getAll(dataQuery);
-    if (products) {
-      return (ctx.body = {
-        success: true,
-        message: "Get product all",
-        products: products,
-      });
-    }
+    const products = await productRepository.getList(dataQuery);
+    return (ctx.body = {
+      success: true,
+      message: "Get product all",
+      products: products,
+    });
   } catch (error) {
     ctx.body = {
       success: false,
@@ -76,14 +73,11 @@ const updateProduct = async (ctx) => {
       id: ctx.params.id,
       data: ctx.request.body,
     };
-    const res = await productRepository.update(dataUpdate);
-    console.log(res);
-    if (res) {
-      return (ctx.body = {
-        success: true,
-        message: "Update product successfully",
-      });
-    }
+    await productRepository.update(dataUpdate);
+    return (ctx.body = {
+      success: true,
+      message: "Update product successfully",
+    });
   } catch (error) {
     return (ctx.body = {
       success: false,
@@ -100,14 +94,11 @@ const updateProduct = async (ctx) => {
 const deleteProduct = async (ctx) => {
   try {
     const id = ctx.params.id;
-    const res = await productRepository.destroy(id);
-    console.log(res);
-    if (res) {
-      return (ctx.body = {
-        success: true,
-        message: "Delete product successfully",
-      });
-    }
+    await productRepository.destroy(id);
+    return (ctx.body = {
+      success: true,
+      message: "Delete product successfully",
+    });
   } catch (error) {
     return (ctx.body = {
       success: false,
@@ -124,17 +115,16 @@ const deleteProduct = async (ctx) => {
 const getProductDetail = async (ctx) => {
   try {
     const product = await productRepository.show(ctx.params.id);
-    console.log(product);
-    if (product) {
-      return (ctx.body = {
-        success: true,
-        message: "Get product detail",
-        product: product,
-      });
-    }
+
+    return (ctx.body = {
+      success: true,
+      message: "Get product detail",
+      product: product,
+    });
   } catch (error) {
     return (ctx.body = {
       success: false,
+      product: {},
       error: error.message,
     });
   }

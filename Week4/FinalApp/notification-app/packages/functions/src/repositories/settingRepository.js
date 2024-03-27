@@ -1,5 +1,5 @@
 import {Firestore} from '@google-cloud/firestore';
-
+import {defaultSetting} from '../const/setting/defaultSetting';
 const firestore = new Firestore();
 const collection = firestore.collection('settings');
 
@@ -9,7 +9,6 @@ export const getByShopId = async shopID => {
       .where('shopId', '==', shopID)
       .limit(1)
       .get();
-    if (settingDocs.empty) throw new Error('Not found shopID');
     const doc = settingDocs.docs[0];
     return {
       id: doc.id,
@@ -17,15 +16,18 @@ export const getByShopId = async shopID => {
     };
   } catch (error) {
     console.log(error);
-    throw new Error(error.message);
+    return {};
   }
 };
 
 export const updateSetting = async data => {
+  return await collection.doc(data.id).update(data);
+};
+
+export const createDefaultSetting = async shopId => {
   try {
-    collection.doc(data.id).update(data);
-    return true;
+    await collection.add({...defaultSetting, shopId});
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

@@ -85,6 +85,7 @@ export default function Notifications() {
   ];
 
   const {data: notifications, loading} = useFetchApi({url: '/notifications'});
+  console.log('notification:', notifications);
 
   const renderItem = item => {
     const {id, firstName, city, country, productName, timestamp, productImage} = item;

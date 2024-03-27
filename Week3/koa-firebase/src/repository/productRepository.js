@@ -1,42 +1,29 @@
 const db = require("../firesrtore/db");
-const timestamp = new Date();
 
 /**
  * @param data
- * @returns {Promise<{success:boolean,data:{id:string}}>}
+ * @returns {Promise<{string}>}
  */
 const productRef = db.collection("products");
 const create = async (data) => {
-  try {
-    const createdAt = timestamp;
-    const updatedAt = timestamp;
-    const query = await productRef.add({ ...data, createdAt, updatedAt });
-    if (query.id) {
-      return {
-        id: query.id,
-        ...data,
-      };
-    }
-  } catch (error) {
-    console.log(error);
+  const timestamp = new Date();
+  const createdAt = timestamp;
+  const updatedAt = timestamp;
+  const query = await productRef.add({ ...data, createdAt, updatedAt });
+  if (query.id) {
+    return query.id;
   }
 };
 
 /**
  * @param dataUpdate
- * @returns {Promise<boolean>}
+ * @returns {Promise}
  */
 const update = async (dataUpdate) => {
-  try {
-    dataUpdate.updatedAt = timestamp;
-    const doc = await productRef.doc(dataUpdate.id).get();
-    if (!doc.exists) throw new Error("Not found with that id!");
-    productRef.doc(dataUpdate.id).update(dataUpdate.data);
-    return true;
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
-  }
+  return await productRef.doc(dataUpdate.id).update({
+    ...dataUpdate,
+    updatedAt: timestamp,
+  });
 };
 
 /**
@@ -46,14 +33,11 @@ const update = async (dataUpdate) => {
  * @param {string} params.fields
  * @returns {Promise<[{id:string, image:string, product:string, color:string, name:string, description:string, createdAt: Date, updatedAt: Date}]>}
  */
-const getAll = async ({ limit, sort, fields }) => {
+const getList = async ({ limit = 10, sort = "asc", fields = null }) => {
   try {
     let query = productRef;
-    if (sort === "asc") {
-      query = query.orderBy("price", "asc");
-    }
-    if (sort === "desc") {
-      query = query.orderBy("price", "desc");
+    if (sort) {
+      query = query.orderBy("price", `${sort}`);
     }
     if (limit) {
       query = query.limit(parseInt(limit));
@@ -69,24 +53,17 @@ const getAll = async ({ limit, sort, fields }) => {
     }));
   } catch (error) {
     console.log(error);
+    return [];
   }
 };
 
 /**
  *
  * @param {string} id
- * @returns {Promise<boolean>}
+ * @returns {Promise}
  */
 const destroy = async (id) => {
-  try {
-    const doc = await productRef.doc(id).get();
-    if (!doc.exists) throw new Error("Not found with that id!");
-    productRef.doc(id).delete();
-    return true;
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
-  }
+  return await productRef.doc(id).delete();
 };
 
 /**
@@ -95,20 +72,14 @@ const destroy = async (id) => {
  * @returns {Promise<{id:string, image:string, product:string, color:string, name:string, description:string, createdAt: Date, updatedAt: Date}>}
  */
 const show = async (id) => {
-  try {
-    const doc = await productRef.doc(id).get();
-    if (!doc.exists) throw new Error("Not found with that id!");
-    return doc.data();
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
-  }
+  const doc = await productRef.doc(id).get();
+  return doc.data();
 };
 
 module.exports = {
   create,
   update,
-  getAll,
+  getList,
   destroy,
   show,
 };

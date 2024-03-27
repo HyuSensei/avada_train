@@ -6,8 +6,7 @@ import { Page, Frame } from "@shopify/polaris";
 import useFetch from "../hooks/fetchTodo";
 import ConfirmModal from "../component/Modal/ConfirmModal";
 import ConfirmSelected from "../component/Modal/ConfirmSelected";
-import ToastError from "../component/Toast/ToastError";
-import ToastSuccess from "../component/Toast/ToastSuccess";
+import ToastComponent from "../component/Toast/ToastComponent";
 
 export default function TodoPage() {
   const API_URL = `http://localhost:5000/api/todos`;
@@ -18,9 +17,9 @@ export default function TodoPage() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-  const [toastError, setToastError] = useState(false);
-  const [toastSuccess, setToastSuccess] = useState(false);
   const [message, setMessage] = useState("");
+  const [activeToast, setActiveToast] = useState(false);
+  const [erro, setError] = useState(false);
 
   const {
     data: listTodo,
@@ -28,14 +27,6 @@ export default function TodoPage() {
     isLoading,
     setIsLoading,
   } = useFetch(API_URL);
-
-  const onActive = () => {
-    setActive(true);
-  };
-
-  const onClose = () => {
-    setActive(false);
-  };
 
   const onActiveConfirm = (id) => {
     setIdTodo(id);
@@ -57,26 +48,23 @@ export default function TodoPage() {
     setSelectedItems([]);
   };
 
-  // useEffect(() => {
-  //   console.log("isLoadingUpdate:", isLoadingComplete);
-  // }, [isLoadingComplete]);
-
-  const create = async (data) => {
+  const createTodo = async (data) => {
     try {
-      setIsLoading(true);
       if (!data.title) {
         setMessage("Please enter a title");
-        setToastError(true);
-        setIsLoading(false);
+        setError(true);
+        setActiveToast(true);
         return;
       }
+      setIsLoading(true);
       const res = await axios.post(API_URL, data);
       if (res.data.success) {
-        onClose();
         setListTodo((prev) => [res.data.todo, ...prev]);
+        setActive(false);
         setIsLoading(false);
         setMessage(res.data.message);
-        setToastSuccess(true);
+        setError(false);
+        setActiveToast(true);
       }
     } catch (error) {
       console.log(error);
@@ -86,8 +74,15 @@ export default function TodoPage() {
   const complete = async (data) => {
     try {
       setIsLoadingComplete(true);
-      const res = await axios.put(API_URL + `/${data.id}`, data);
-      if (res.data.success) {
+      const api = await fetch(API_URL + `/${data.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const res = await api.json();
+      if (res.success) {
         setListTodo((prev) => {
           return prev.map((item) =>
             item.id === data.id
@@ -95,38 +90,53 @@ export default function TodoPage() {
               : item
           );
         });
-        setIsLoadingComplete(false);
-        setMessage(res.data.message);
-        setToastSuccess(true);
+        setMessage(res.message);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoadingComplete(false);
+      setError(false);
+      setActiveToast(true);
     }
   };
 
   const destroy = async () => {
     try {
       setIsLoadingDelete(true);
-      const res = await axios.delete(API_URL + `/${idTodo}`);
-      if (res.data.success) {
+      const api = await fetch(API_URL + `/${idTodo}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const res = await api.json();
+      if (res.success) {
         const todos = listTodo.filter((item) => item.id !== idTodo);
-        setTimeout(() => {
-          setListTodo(todos);
-          setIsLoadingDelete(false);
-          setMessage(res.data.message);
-          setToastSuccess(true);
-        }, 1000);
+        setListTodo(todos);
+        setMessage(res.message);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoadingDelete(false);
+      setError(false);
+      setActiveToast(true);
     }
   };
 
   const updateSelected = async (data) => {
     try {
       setIsLoading(true);
-      const res = await axios.put(API_URL, data);
-      if (res.data.success) {
+      const api = await fetch(API_URL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const res = await api.json();
+      if (res.success) {
         const updateTodos = listTodo.map((item) => {
           if (data.selected.includes(item.id)) {
             return {
@@ -136,85 +146,86 @@ export default function TodoPage() {
           }
           return item;
         });
-        setTimeout(() => {
-          setListTodo(updateTodos);
-          setIsLoading(false);
-          setMessage(res.data.message);
-          setToastSuccess(true);
-        }, 1000);
+        setListTodo(updateTodos);
+        setMessage(res.message);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
+      setError(false);
+      setActiveToast(true);
     }
   };
 
   const deleteSelected = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.post(API_URL + "/delete", {
-        selected: selectedItems,
+      const api = await fetch(API_URL + "/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          selected: selectedItems,
+        }),
       });
-      if (res.data.success === true) {
+      const res = await api.json();
+      if (res.success) {
         const newTodo = listTodo.filter(
           (todo) => !selectedItems.includes(todo.id)
         );
-        setTimeout(() => {
-          setListTodo(newTodo);
-          setIsLoading(false);
-          setMessage(res.data.message);
-          setToastSuccess(true);
-        }, 1000);
+        setListTodo(newTodo);
+        setMessage(res.message);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
+      setError(false);
+      setActiveToast(true);
     }
   };
 
   return (
-    <>
-      <Frame>
-        <Page
-          title="Todoes"
-          primaryAction={{
-            content: "Create",
-            onAction: onActive,
-          }}
-        >
-          <TodoList
-            listTodo={listTodo}
-            isLoading={isLoading}
-            complete={complete}
-            updateSelected={updateSelected}
-            deleteSelected={deleteSelected}
-            onActiveConfirm={onActiveConfirm}
-            onActiveConfirmSelected={onActiveConfirmSelected}
-            isLoadingComplete={isLoadingComplete}
-            isLoadingDelete={isLoadingDelete}
-          />
-          <CreateModal open={active} create={create} onClose={onClose} />
-          <ConfirmModal
-            id={idTodo}
-            open={activeConfirm}
-            onClose={onCloseConfirm}
-            destroy={destroy}
-          />
-          <ConfirmSelected
-            open={activeConfirmSelected}
-            onClose={onCloseConfirmSelected}
-            destroy={deleteSelected}
-          />
-          <ToastError
-            active={toastError}
-            message={message}
-            setToastError={setToastError}
-          />
-          <ToastSuccess
-            active={toastSuccess}
-            message={message}
-            setToastSuccess={setToastSuccess}
-          />
-        </Page>
-      </Frame>
-    </>
+    <Frame>
+      <Page
+        title="Todoes"
+        primaryAction={{
+          content: "Create",
+          onAction: () => setActive(true),
+        }}
+      >
+        <TodoList
+          listTodo={listTodo}
+          isLoading={isLoading}
+          complete={complete}
+          updateSelected={updateSelected}
+          deleteSelected={deleteSelected}
+          onActiveConfirm={onActiveConfirm}
+          onActiveConfirmSelected={onActiveConfirmSelected}
+          isLoadingComplete={isLoadingComplete}
+          isLoadingDelete={isLoadingDelete}
+        />
+        <CreateModal open={active} onSubmit={createTodo} onClose={setActive} />
+        <ConfirmModal
+          id={idTodo}
+          open={activeConfirm}
+          onClose={onCloseConfirm}
+          destroy={destroy}
+        />
+        <ConfirmSelected
+          open={activeConfirmSelected}
+          onClose={onCloseConfirmSelected}
+          destroy={deleteSelected}
+        />
+        <ToastComponent
+          active={activeToast}
+          message={message}
+          setActive={setActiveToast}
+          erro={erro}
+        />
+      </Page>
+    </Frame>
   );
 }

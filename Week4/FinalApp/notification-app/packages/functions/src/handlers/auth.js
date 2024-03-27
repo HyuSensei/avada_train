@@ -1,12 +1,17 @@
 import App from 'koa';
 import 'isomorphic-fetch';
-import {contentSecurityPolicy, shopifyAuth} from '@avada/core';
+import {contentSecurityPolicy, getShopByShopifyDomain, shopifyAuth} from '@avada/core';
 import shopifyConfig from '@functions/config/shopify';
 import render from 'koa-ejs';
 import path from 'path';
 import createErrorHandler from '@functions/middleware/errorHandler';
 import firebase from 'firebase-admin';
 import appConfig from '@functions/config/app';
+import {createDefaultSetting} from '../repositories/settingRepository';
+import {saveNotifications} from '../repositories/notificationRepository';
+import Shopify from 'shopify-api-node';
+import {getNotificationList} from '../services/shopifyApiService';
+import {createWebhook} from '../services/webhookService';
 
 if (firebase.apps.length === 0) {
   firebase.initializeApp();
@@ -34,6 +39,24 @@ app.use(
     scopes: shopifyConfig.scopes,
     secret: shopifyConfig.secret,
     successRedirect: '/embed',
+    afterLogin: async ctx => {
+      const shopifyDomain = ctx.state.shopify.shop;
+      const shop = await getShopByShopifyDomain(shopifyDomain);
+      await createWebhook({shopifyDomain, shop});
+    },
+    afterInstall: async ctx => {
+      try {
+        const shopifyDomain = ctx.state.shopify.shop;
+        const shop = await getShopByShopifyDomain(shopifyDomain);
+        await createWebhook({shopifyDomain, shop});
+        await createDefaultSetting(shop.id);
+        const shopify = new Shopify({shopName: shopifyDomain, accessToken: shop.accessToken});
+        const data = await getNotificationList(shopify);
+        await saveNotifications({shopifyDomain, shopId: shop.id, data});
+      } catch (error) {
+        console.log(error);
+      }
+    },
     initialPlan: {
       id: 'free',
       name: 'Free',

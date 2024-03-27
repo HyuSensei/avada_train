@@ -9,13 +9,11 @@ const createTodo = async (ctx) => {
   try {
     const data = ctx.req.body;
     const todo = await todoRepository.create(data);
-    if (todo) {
-      return (ctx.body = {
-        success: true,
-        message: "Create todo success",
-        todo: todo,
-      });
-    }
+    return (ctx.body = {
+      success: true,
+      message: "Create todo success",
+      todo: todo,
+    });
   } catch (error) {
     ctx.body = {
       success: false,
@@ -31,14 +29,12 @@ const createTodo = async (ctx) => {
  */
 const getAllTodo = async (ctx) => {
   try {
-    const todos = await todoRepository.getAll();
-    if (todos) {
-      return (ctx.body = {
-        success: true,
-        message: "Get all todos list",
-        todos: todos,
-      });
-    }
+    const todos = await todoRepository.getList();
+    return (ctx.body = {
+      success: true,
+      message: "Get all todos list",
+      todos: todos,
+    });
   } catch (error) {
     ctx.body = {
       success: false,
@@ -56,13 +52,11 @@ const getAllTodo = async (ctx) => {
 const destroyTodo = async (ctx) => {
   try {
     const id = ctx.params.id;
-    const res = await todoRepository.destroy(id);
-    if (res) {
-      return (ctx.body = {
-        success: true,
-        message: "Delete todo success",
-      });
-    }
+    await todoRepository.destroy(id);
+    return (ctx.body = {
+      success: true,
+      message: "Delete todo success",
+    });
   } catch (error) {
     ctx.body = {
       success: false,
@@ -80,16 +74,14 @@ const updateTodo = async (ctx) => {
   try {
     const id = ctx.params.id;
     const data = ctx.req.body;
-    const res = await todoRepository.update({
+    await todoRepository.update({
       id,
       isCompleted: data.isCompleted,
     });
-    if (res) {
-      return (ctx.body = {
-        success: true,
-        message: "Update todo success",
-      });
-    }
+    return (ctx.body = {
+      success: true,
+      message: "Update todo success",
+    });
   } catch (error) {
     ctx.body = {
       success: false,
@@ -106,13 +98,12 @@ const updateTodo = async (ctx) => {
 const updateSelectedTodo = async (ctx) => {
   try {
     const data = ctx.req.body;
-    const res = await todoRepository.updateSeleted(data);
-    if (res) {
-      return (ctx.body = {
-        success: true,
-        message: "Update todo selected success",
-      });
-    }
+    console.log("data", data);
+    todoRepository.updateSeleted(data);
+    return (ctx.body = {
+      success: true,
+      message: "Update todo selected success",
+    });
   } catch (error) {
     ctx.body = {
       success: false,
@@ -129,13 +120,11 @@ const updateSelectedTodo = async (ctx) => {
 const deleteSelectedTodo = async (ctx) => {
   try {
     const data = ctx.req.body;
-    const res = await todoRepository.deleteSelected(data.selected);
-    if (res) {
-      return (ctx.body = {
-        success: true,
-        message: "Delete todo selected success",
-      });
-    }
+    await todoRepository.deleteSelected(data.selected);
+    return (ctx.body = {
+      success: true,
+      message: "Delete todo selected success",
+    });
   } catch (error) {
     ctx.body = {
       success: false,
