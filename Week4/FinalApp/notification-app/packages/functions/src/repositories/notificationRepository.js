@@ -38,7 +38,7 @@ export const saveNotifications = async ({shopifyDomain, shopId, data}) => {
 export const saveNotificationItem = async ({shopId, shopifyDomain, data}) => {
   console.log('data:', data);
   // const timestamp = new Date(data.timestamp);
-  // await collection.add({
+  // return await collection.add({
   //   ...data,
   //   shopifyDomain,
   //   shopId,

@@ -12,7 +12,7 @@ export const createWebhook = async ({shopifyDomain, shop}) => {
       address: `https://${appConfig.baseUrl}/webhook/order/new`,
       format: 'json'
     };
-    await shopify.webhook.create(webhookData);
+    return await shopify.webhook.create(webhookData);
   } catch (error) {
     console.log(error.response.body);
   }

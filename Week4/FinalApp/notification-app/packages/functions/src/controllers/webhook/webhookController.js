@@ -11,11 +11,9 @@ export const listenNewOrder = async ctx => {
       shopName: shopifyDomain,
       accessToken: shop.accessToken
     });
-
     const dataOrder = ctx.req.body;
     const data = await getNotificationItem({shopify, dataOrder});
     await saveNotificationItem({shopId: shop.id, shopifyDomain, data});
-    console.log('data:', data);
     return (ctx.body = {
       success: true
     });

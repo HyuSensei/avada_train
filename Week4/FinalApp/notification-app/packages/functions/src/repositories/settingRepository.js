@@ -26,7 +26,7 @@ export const updateSetting = async data => {
 
 export const createDefaultSetting = async shopId => {
   try {
-    await collection.add({...defaultSetting, shopId});
+    return await collection.add({...defaultSetting, shopId});
   } catch (error) {
     console.error(error);
   }

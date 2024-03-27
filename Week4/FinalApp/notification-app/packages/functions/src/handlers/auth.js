@@ -39,20 +39,22 @@ app.use(
     scopes: shopifyConfig.scopes,
     secret: shopifyConfig.secret,
     successRedirect: '/embed',
-    afterLogin: async ctx => {
-      const shopifyDomain = ctx.state.shopify.shop;
-      const shop = await getShopByShopifyDomain(shopifyDomain);
-      await createWebhook({shopifyDomain, shop});
-    },
+    // afterLogin: async ctx => {
+    //   const shopifyDomain = ctx.state.shopify.shop;
+    //   const shop = await getShopByShopifyDomain(shopifyDomain);
+    //   await createWebhook({shopifyDomain, shop});
+    // },
     afterInstall: async ctx => {
       try {
         const shopifyDomain = ctx.state.shopify.shop;
         const shop = await getShopByShopifyDomain(shopifyDomain);
-        await createWebhook({shopifyDomain, shop});
-        await createDefaultSetting(shop.id);
         const shopify = new Shopify({shopName: shopifyDomain, accessToken: shop.accessToken});
         const data = await getNotificationList(shopify);
-        await saveNotifications({shopifyDomain, shopId: shop.id, data});
+        await Promise.all([
+          createWebhook({shopifyDomain, shop}),
+          createDefaultSetting(shop.id),
+          saveNotifications({shopifyDomain, shopId: shop.id, data})
+        ]);
       } catch (error) {
         console.log(error);
       }
