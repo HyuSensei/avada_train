@@ -14,6 +14,6 @@ export const createWebhook = async ({shopifyDomain, shop}) => {
     };
     return await shopify.webhook.create(webhookData);
   } catch (error) {
-    console.log(error.response.body);
+    console.log(error);
   }
 };

@@ -33,7 +33,7 @@ const NotificationPopup = ({
                 <div style={{fontSize: '13px'}} className={'Avada-SP__Footer'}>
                   {/* <span className="uni-blue Polaris-Text--root Polaris-Text--headingMd"> */}
                   <InlineStack>
-                    <Text variant="bodySm" as="p">
+                    <Text variant="bodyLg" as="p">
                       {timestamp}
                     </Text>
                     <Box>

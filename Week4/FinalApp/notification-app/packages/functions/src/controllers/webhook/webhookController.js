@@ -5,6 +5,7 @@ import {saveNotificationItem} from '../../repositories/notificationRepository';
 
 export const listenNewOrder = async ctx => {
   try {
+    console.log('run order webhook');
     const shopifyDomain = ctx.get('X-Shopify-Shop-Domain');
     const shop = await getShopByShopifyDomain(shopifyDomain);
     const shopify = new Shopify({

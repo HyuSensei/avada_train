@@ -1,4 +1,4 @@
-import {getAllNotification} from '../repositories/notificationRepository';
+import {getAllNotification, getNotificationByDomain} from '../repositories/notificationRepository';
 
 export const getNotification = async ctx => {
   try {
@@ -11,6 +11,24 @@ export const getNotification = async ctx => {
       });
     }
   } catch (error) {
+    ctx.body = {
+      success: false,
+      data: [],
+      error: error.message
+    };
+  }
+};
+
+export const list = async ctx => {
+  try {
+    const {shopifyDomain} = ctx.query;
+    const notifications = await getNotificationByDomain(shopifyDomain);
+    return (ctx.body = {
+      success: true,
+      data: notifications
+    });
+  } catch (error) {
+    console.log(error);
     ctx.body = {
       success: false,
       data: [],

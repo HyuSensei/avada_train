@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 name = "Sales Notifications"
-client_id = "481d1aa9d0857b94a7033f610735b1e9"
-application_url = "https://blake-gadgets-global-fl.trycloudflare.com/auth/shopify"
+client_id = "707ca16e6807f42e382f6d6171b31fc0"
+application_url = "https://milwaukee-activated-true-humans.trycloudflare.com/auth/shopify"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://blake-gadgets-global-fl.trycloudflare.com/auth/shopify/callback",
-  "https://blake-gadgets-global-fl.trycloudflare.com/authSa/shopify/callback",
-  "https://blake-gadgets-global-fl.trycloudflare.com/auth/shopify/embed/callback",
+  "https://milwaukee-activated-true-humans.trycloudflare.com/auth/shopify/callback",
+  "https://milwaukee-activated-true-humans.trycloudflare.com/authSa/shopify/callback",
+  "https://milwaukee-activated-true-humans.trycloudflare.com/auth/shopify/embed/callback",
   "https://localhost:3000/auth/shopify/callback",
   "https://localhost:3000/authSa/shopify/callback",
   "https://localhost:3000/auth/shopify/embed/callback"
@@ -27,4 +27,4 @@ embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "store-sales-notifications.myshopify.com"
+dev_store_url = "store-sale-notifications.myshopify.com"

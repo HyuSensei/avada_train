@@ -88,7 +88,7 @@ export default function Notifications() {
   console.log('notification:', notifications);
 
   const renderItem = item => {
-    const {id, firstName, city, country, productName, timestamp, productImage} = item;
+    const {id, firstName, city, country, productName, timestamp, productImage, createdAt} = item;
     return (
       <ResourceItem id={id}>
         <InlineStack align="space-between">
@@ -97,12 +97,12 @@ export default function Notifications() {
             city={city}
             country={country}
             productName={productName}
-            timestamp={formatDateOnly(timestamp)}
+            timestamp={timestamp}
             productImage={productImage}
           />
           <Box>
             <Text as="p" fontWeight="medium">
-              From {formatDateOnly(timestamp)}
+              From {formatDateOnly(createdAt)}
             </Text>
           </Box>
         </InlineStack>
