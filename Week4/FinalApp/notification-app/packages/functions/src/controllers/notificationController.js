@@ -22,10 +22,11 @@ export const getNotification = async ctx => {
 export const list = async ctx => {
   try {
     const {shopifyDomain} = ctx.query;
-    const notifications = await getNotificationByDomain(shopifyDomain);
+    const {notifications, settings} = await getNotificationByDomain(shopifyDomain);
     return (ctx.body = {
       success: true,
-      data: notifications
+      notifications: notifications,
+      settings: settings
     });
   } catch (error) {
     console.log(error);

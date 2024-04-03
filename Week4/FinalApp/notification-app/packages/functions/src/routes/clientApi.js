@@ -1,6 +1,7 @@
 import Router from 'koa-router';
-import {list} from '../controllers/notificationController';
+import * as notificationController from '../controllers/notificationController';
 
 const router = new Router();
-router.get('/notifications', list);
+router.get('/notifications', notificationController.list);
+
 export default router;

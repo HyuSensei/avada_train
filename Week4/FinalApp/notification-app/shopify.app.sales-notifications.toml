@@ -2,7 +2,7 @@
 
 name = "Sales Notifications"
 client_id = "707ca16e6807f42e382f6d6171b31fc0"
-application_url = "https://milwaukee-activated-true-humans.trycloudflare.com/auth/shopify"
+application_url = "https://markers-afraid-exchanges-uh.trycloudflare.com/auth/shopify"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://milwaukee-activated-true-humans.trycloudflare.com/auth/shopify/callback",
-  "https://milwaukee-activated-true-humans.trycloudflare.com/authSa/shopify/callback",
-  "https://milwaukee-activated-true-humans.trycloudflare.com/auth/shopify/embed/callback",
+  "https://markers-afraid-exchanges-uh.trycloudflare.com/auth/shopify/callback",
+  "https://markers-afraid-exchanges-uh.trycloudflare.com/authSa/shopify/callback",
+  "https://markers-afraid-exchanges-uh.trycloudflare.com/auth/shopify/embed/callback",
   "https://localhost:3000/auth/shopify/callback",
   "https://localhost:3000/authSa/shopify/callback",
   "https://localhost:3000/auth/shopify/embed/callback"

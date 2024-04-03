@@ -24,10 +24,6 @@ export const updateSetting = async data => {
   return await collection.doc(data.id).update(data);
 };
 
-export const createDefaultSetting = async shopId => {
-  try {
-    return await collection.add({...defaultSetting, shopId});
-  } catch (error) {
-    console.error(error);
-  }
+export const createDefaultSetting = async ({shopId, shopifyDomain}) => {
+  return await collection.add({...defaultSetting, shopId, shopifyDomain});
 };

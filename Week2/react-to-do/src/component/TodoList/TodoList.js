@@ -153,8 +153,8 @@ const TodoList = ({
                     onClick={() => completeClick(id)}
                     tone="success"
                     loading={isLoadingComplete ? isItemLoading : false}
-                    // disabled={isItemLoading && actionItems[id] == "loading"}
-                    // loading={isItemLoading && actionItems[id] === "loading"}
+                  // disabled={isItemLoading && actionItems[id] == "loading"}
+                  // loading={isItemLoading && actionItems[id] === "loading"}
                   >
                     Complete
                   </Button>

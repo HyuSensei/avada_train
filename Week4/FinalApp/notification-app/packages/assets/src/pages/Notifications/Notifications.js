@@ -1,6 +1,14 @@
 import React, {useState} from 'react';
-import {Page, Card, ResourceItem, ResourceList, Text, InlineStack, Box} from '@shopify/polaris';
-import {useStore} from '@assets/reducers/storeReducer';
+import {
+  Page,
+  Card,
+  ResourceItem,
+  ResourceList,
+  Text,
+  InlineStack,
+  Box,
+  LegacyCard
+} from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
 import useFetchApi from '@assets/hooks/api/useFetchApi';
 import {formatDateOnly} from '@assets/helpers/utils/formatFullTime';
@@ -11,7 +19,6 @@ import {formatDateOnly} from '@assets/helpers/utils/formatFullTime';
  * @constructor
  */
 export default function Notifications() {
-  const {dispatch} = useStore();
   const [selectedItems, setSelectedItems] = useState([]);
   const resourceName = {
     singular: 'notification',
@@ -137,6 +144,7 @@ export default function Notifications() {
           renderItem={item => renderItem(item)}
         />
       </Card>
+      <LegacyCard.Section></LegacyCard.Section>
     </Page>
   );
 }

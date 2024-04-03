@@ -8,9 +8,7 @@ export const getAllNotification = async () => {
   try {
     const query = await collection.orderBy('timestamp', 'desc').get();
     return query.docs.map(doc => {
-      const date = moment(doc.data().timestamp)
-        .startOf('day')
-        .fromNow();
+      const date = moment(doc.data().timestamp.toDate()).from(moment());
       return {
         id: doc.id,
         ...doc.data(),
@@ -25,23 +23,19 @@ export const getAllNotification = async () => {
 };
 
 export const saveNotifications = async ({shopifyDomain, shopId, data}) => {
-  try {
-    return data.forEach(async item => {
-      const timestamp = new Date(item.timestamp);
-      await collection.add({
-        ...item,
-        shopifyDomain,
-        shopId,
-        timestamp: Timestamp.fromDate(timestamp)
-      });
+  const queries = data.map(item => {
+    const timestamp = new Date(item.timestamp);
+    return collection.add({
+      ...item,
+      shopifyDomain,
+      shopId,
+      timestamp: Timestamp.fromDate(timestamp)
     });
-  } catch (error) {
-    console.log(error);
-  }
+  });
+  return await Promise.all(queries);
 };
 
 export const saveNotificationItem = async ({shopId, shopifyDomain, data}) => {
-  console.log('data:', data);
   const timestamp = new Date(data.timestamp);
   return await collection.add({
     ...data,
@@ -53,17 +47,37 @@ export const saveNotificationItem = async ({shopId, shopifyDomain, data}) => {
 
 export const getNotificationByDomain = async shopifyDomain => {
   try {
-    const query = await collection.where('shopifyDomain', '==', shopifyDomain).get();
-    return query.docs.map(doc => {
-      const date = moment(doc.data().timestamp)
-        .startOf('day')
-        .fromNow();
+    const [queryNotifications, querySettings] = await Promise.all([
+      collection.where('shopifyDomain', '==', shopifyDomain).get(),
+      firestore
+        .collection('settings')
+        .where('shopifyDomain', '==', shopifyDomain)
+        .limit(1)
+        .get()
+    ]);
+    const docSettings = querySettings.docs[0];
+    const settings = {
+      id: docSettings.id,
+      ...docSettings.data(),
+      excludedUrls: docSettings.data().excludedUrls
+        ? docSettings.data().excludedUrls.split('\n')
+        : [],
+      includedUrls: docSettings.data().includedUrls
+        ? docSettings.data().includedUrls.split('\n')
+        : []
+    };
+    const notifications = queryNotifications.docs.map(doc => {
+      const date = moment(doc.data().timestamp.toDate()).from(moment());
       return {
         id: doc.id,
         ...doc.data(),
         timestamp: date
       };
     });
+    return {
+      notifications,
+      settings
+    };
   } catch (error) {
     console.log(error);
     return [];

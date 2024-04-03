@@ -11,6 +11,7 @@ export default {
     'write_themes',
     'read_orders',
     'read_products',
+    'read_customers',
     'read_script_tags',
     'write_script_tags'
   ]

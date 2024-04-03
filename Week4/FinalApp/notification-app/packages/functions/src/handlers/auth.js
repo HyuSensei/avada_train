@@ -9,7 +9,6 @@ import firebase from 'firebase-admin';
 import appConfig from '@functions/config/app';
 import {createDefaultSetting} from '../repositories/settingRepository';
 import {saveNotifications} from '../repositories/notificationRepository';
-import Shopify from 'shopify-api-node';
 import {getNotificationList} from '../services/shopifyApiService';
 import {createWebhook} from '../services/webhookService';
 
@@ -42,12 +41,13 @@ app.use(
     afterInstall: async ctx => {
       try {
         const shopifyDomain = ctx.state.shopify.shop;
-        const shop = await getShopByShopifyDomain(shopifyDomain);
-        const shopify = new Shopify({shopName: shopifyDomain, accessToken: shop.accessToken});
-        const data = await getNotificationList(shopify);
+        const [shop, data] = await Promise.all([
+          getShopByShopifyDomain(shopifyDomain),
+          getNotificationList({shopifyDomain, accessToken: shop.accessToken})
+        ]);
         await Promise.all([
           createWebhook({shopifyDomain, shop}),
-          createDefaultSetting(shop.id),
+          createDefaultSetting({shopId: shop.id, shopifyDomain}),
           saveNotifications({shopifyDomain, shopId: shop.id, data})
         ]);
       } catch (error) {
