@@ -29,7 +29,6 @@ export default function SkeletonLoading() {
             <BlockStack gap={400}>
               <SkeletonTabs />
               <SkeletonDisplayText size="medium" />
-              <SkeletonDisplayText size="small" />
               <InlineStack gap={400}>
                 <SkeletonThumbnail size="large" />
                 <SkeletonThumbnail size="large" />
@@ -39,18 +38,14 @@ export default function SkeletonLoading() {
               <SkeletonThumbnail size="small" />
               <SkeletonThumbnail size="small" />
               <SkeletonDisplayText size="small" />
-              <Layout>
-                <Layout.Section variant="oneHalf">
-                  <LegacyCard.Section>
-                    <SkeletonBodyText lines={3} />
-                  </LegacyCard.Section>
-                </Layout.Section>
-                <Layout.Section variant="oneHalf">
-                  <LegacyCard.Section>
-                    <SkeletonBodyText lines={3} />
-                  </LegacyCard.Section>
-                </Layout.Section>
-              </Layout>
+              <InlineGrid columns={2}>
+                <LegacyCard.Section>
+                  <SkeletonBodyText lines={5} />
+                </LegacyCard.Section>
+                <LegacyCard.Section>
+                  <SkeletonBodyText lines={5} />
+                </LegacyCard.Section>
+              </InlineGrid>
             </BlockStack>
           </Card>
         </Layout.Section>

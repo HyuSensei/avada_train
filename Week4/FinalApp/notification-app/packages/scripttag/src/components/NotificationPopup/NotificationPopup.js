@@ -7,8 +7,9 @@ const NotificationPopup = ({
   country = 'United States',
   productName = 'Puffer Jacket With Hidden Hood',
   timestamp = 'a day ago',
-  productImage = 'http://paris.mageplaza.com/images/shop/single/big-1.jpg',
-  setting
+  productImage = 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTj6DoZBwRbMkXGyBWrWXPtVTWUnqRYa7uNcAUqunH1z7ZGkpRG',
+  setting,
+  onClose
 }) => {
   const classTitle = setting.truncateProductName
     ? 'Avada-SP__Subtitle__Hide'
@@ -17,26 +18,31 @@ const NotificationPopup = ({
     <div className={`Avava-SP__Wrapper Avava-SP__${setting.position} fadeInUp animated`}>
       <div className="Avava-SP__Inner">
         <div className="Avava-SP__Container">
-          <a href="#" className={'Avava-SP__LinkWrapper'}>
-            <div
-              className="Avava-SP__Image"
-              style={{
-                backgroundImage: `url(${productImage})`
-              }}
-            />
-            <div className="Avada-SP__Content">
-              <div className={'Avada-SP__Title'}>
-                {firstName} in {city}, {country}
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <a href="" className={'Avava-SP__LinkWrapper'}>
+              <div
+                className="Avava-SP__Image"
+                style={{
+                  backgroundImage: `url(${productImage})`
+                }}
+              />
+              <div className="Avada-SP__Content">
+                <div className={'Avada-SP__Title'}>
+                  {firstName} in {city}, {country}
+                </div>
+                <div className={classTitle}>purchased {productName}</div>
+                <div className={'Avada-SP__Footer'}>
+                  {!setting.hideTimeAgo ? timestamp : ''}
+                  <span className="uni-blue">
+                    <i className="fa fa-check" aria-hidden="true" /> by avada
+                  </span>
+                </div>
               </div>
-              <div className={classTitle}>purchased {productName}</div>
-              <div className={'Avada-SP__Footer'}>
-                {!setting.hideTimeAgo ? timestamp : ''}
-                <span className="uni-blue">
-                  <i className="fa fa-check" aria-hidden="true" /> by Avada
-                </span>
-              </div>
+            </a>
+            <div onClick={onClose} style={{fontWeight: 'bold', cursor: 'pointer'}}>
+              x
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>

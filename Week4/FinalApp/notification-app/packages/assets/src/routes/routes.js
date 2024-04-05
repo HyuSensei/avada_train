@@ -13,7 +13,7 @@ const Routes = ({prefix = routePrefix}) => (
   <Suspense fallback={<Loading />}>
     <Switch>
       <Route exact path={prefix + '/'} component={Home} />
-      <Route exact path={prefix + '/samples'} component={Samples} />
+      {/* <Route exact path={prefix + '/samples'} component={Samples} /> */}
       <Route exact path={prefix + '/settings'} component={Settings} />
       <Route exact path={prefix + '/notifications'} component={Notifications} />
       <Route path="*" component={NotFound} />

@@ -1,8 +1,6 @@
 import {getShopByShopifyDomain} from '@avada/core';
-import Shopify from 'shopify-api-node';
 import {getNotificationItem} from '../../services/shopifyApiService';
 import {saveNotificationItem} from '../../repositories/notificationRepository';
-import {messaging} from 'firebase-admin';
 
 export const listenNewOrder = async ctx => {
   try {

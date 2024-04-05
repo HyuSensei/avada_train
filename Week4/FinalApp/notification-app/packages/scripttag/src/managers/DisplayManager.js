@@ -21,7 +21,7 @@ export default class DisplayManager {
       }
     }
     if (settings.allowShow === 'specific') {
-      if (settings.includedUrls.some(item => item === currentURL)) {
+      if (!settings.excludedUrls.some(item => item === currentURL)) {
         await this.display({notifications: notifications, setting: settings});
       }
     }
@@ -30,6 +30,11 @@ export default class DisplayManager {
   fadeOut() {
     const container = document.querySelector('#Avada-SalePop');
     container.innerHTML = '';
+  }
+
+  remove() {
+    const container = document.querySelector('#Avada-SalePop');
+    render(null, container);
   }
 
   delay = ms => new Promise(res => setTimeout(res, ms));
@@ -43,16 +48,16 @@ export default class DisplayManager {
     // # Delay gap time
     const container = document.querySelector('#Avada-SalePop');
     let displayedCount = 0;
+    await this.delay(setting.firstDelay * 1000);
     for (const item of notifications) {
       if (displayedCount >= setting.maxPopsDisplay) {
         break;
       }
-      const popupEl = this.insertContainer();
-      render(<NotificationPopup {...item} setting={setting} />, popupEl);
-      container.appendChild(popupEl);
+      render(<NotificationPopup {...item} setting={setting} onClose={this.remove} />, container);
       await this.delay(setting.displayDuration * 1000);
       this.fadeOut();
       await this.delay(setting.popsInterval * 1000);
+      this.remove();
       displayedCount++;
     }
   }

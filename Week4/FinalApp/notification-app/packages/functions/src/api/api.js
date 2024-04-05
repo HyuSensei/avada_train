@@ -23,12 +23,13 @@ const makeGraphQlRequest = async (url, {method, body, headers}) => {
  * @returns {Promise<*[]>}
  */
 export const handleGetOrderApi = async ({shopifyDomain, accessToken}) => {
-  const result = await makeGraphQlRequest(
-    `https://${shopifyDomain}/admin/api/${API_VERSION}/graphql.json`,
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        query: `
+  try {
+    const result = await makeGraphQlRequest(
+      `https://${shopifyDomain}/admin/api/${API_VERSION}/graphql.json`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          query: `
               query {
                 orders(first: 30) {
                   edges {
@@ -57,14 +58,18 @@ export const handleGetOrderApi = async ({shopifyDomain, accessToken}) => {
                 }
             }
             `
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': accessToken
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Shopify-Access-Token': accessToken
+        }
       }
-    }
-  );
-  return result;
+    );
+    return result;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 };
 
 /**
@@ -74,30 +79,35 @@ export const handleGetOrderApi = async ({shopifyDomain, accessToken}) => {
  * @returns {Promise<*[]>}
  */
 export const handleGetProductApi = async ({shopifyDomain, accessToken, productId}) => {
-  const result = await makeGraphQlRequest(
-    `https://${shopifyDomain}/admin/api/${API_VERSION}/graphql.json`,
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        query: `
-              query {
-                product(id: "gid://shopify/Product/${productId}") {
-                    id
-                    title
-                    images(first: 1) {
-                    nodes {
-                          src
+  try {
+    const result = await makeGraphQlRequest(
+      `https://${shopifyDomain}/admin/api/${API_VERSION}/graphql.json`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          query: `
+                query {
+                  product(id: "gid://shopify/Product/${productId}") {
+                      id
+                      title
+                      images(first: 1) {
+                      nodes {
+                            src
+                          }
                         }
                       }
-                    }
-                }
-            `
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': accessToken
+                  }
+              `
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Shopify-Access-Token': accessToken
+        }
       }
-    }
-  );
-  return result;
+    );
+    return result;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 };

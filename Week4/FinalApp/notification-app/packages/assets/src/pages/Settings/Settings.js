@@ -95,7 +95,7 @@ export default function Settings() {
           <NotificationPopup />
         </Layout.Section>
         <Layout.Section>
-          <Card>
+          <Card padding={'1000'}>
             <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange} fitted>
               {tabs[selected].body}
             </Tabs>

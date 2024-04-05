@@ -32,10 +32,10 @@ export default function AppBridgeProvider({children}) {
             label: 'Notifications',
             destination: '/notifications'
           },
-          {
-            label: 'Samples',
-            destination: '/samples'
-          },
+          // {
+          //   label: 'Samples',
+          //   destination: '/samples'
+          // },
           {
             label: 'Settings',
             destination: '/settings'

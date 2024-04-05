@@ -10,8 +10,6 @@
     "start": "http-server"
   },
   "dependencies": {
-    "@shopify/polaris": "12.3.0",
-    "@shopify/polaris-icons": "^8.2.0",
     "preact": "^10.3.2",
     "preact-html-converter" : "^0.4.2",
     "preact-context": "^1.1.4"

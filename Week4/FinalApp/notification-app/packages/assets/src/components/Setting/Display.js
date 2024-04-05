@@ -32,7 +32,7 @@ export default function Display({input, handleChangeInput}) {
           TIMING
         </Text>
         <Layout>
-          <Layout.Section variant="oneHalf">
+          {/* <Layout.Section variant="oneHalf">
             <FormLayout.Group condensed>
               <RangeSlider
                 label="Display duration"
@@ -120,6 +120,95 @@ export default function Display({input, handleChangeInput}) {
                 }
               />
             </FormLayout.Group>
+          </Layout.Section> */}
+          <Layout.Section variant="oneThird">
+            <RangeSlider
+              label="Display duration"
+              value={input.displayDuration}
+              onChange={value => handleChangeInput('displayDuration', value)}
+              output
+              helpText="How long each pop will display on your page."
+              suffix={
+                <Box maxWidth="140px">
+                  <TextField
+                    value={input.displayDuration}
+                    type="number"
+                    min={1}
+                    max={60}
+                    onChange={value => handleChangeInput('displayDuration', value)}
+                    suffix={'second(s)'}
+                  />
+                </Box>
+              }
+              max={60}
+            />
+          </Layout.Section>
+          <Layout.Section variant="oneThird">
+            <RangeSlider
+              label="Gap time between two pops"
+              value={input.popsInterval}
+              onChange={value => handleChangeInput('popsInterval', value)}
+              output
+              helpText="The time interval between two popup notifications."
+              suffix={
+                <Box maxWidth="140px">
+                  <TextField
+                    value={input.popsInterval}
+                    type="number"
+                    min={1}
+                    max={60}
+                    onChange={value => handleChangeInput('popsInterval', value)}
+                    suffix={'second(s)'}
+                  />
+                </Box>
+              }
+              max={60}
+            />
+          </Layout.Section>
+          <Layout.Section variant="oneThird">
+            <RangeSlider
+              label="Time before the first pop"
+              value={input.firstDelay}
+              onChange={value => handleChangeInput('firstDelay', value)}
+              output
+              helpText="The delay time before the first notification."
+              suffix={
+                <Box maxWidth="140px">
+                  <TextField
+                    value={input.firstDelay}
+                    type="number"
+                    min={1}
+                    max={60}
+                    onChange={value => handleChangeInput('firstDelay', value)}
+                    suffix={'second(s)'}
+                  />
+                </Box>
+              }
+              max={60}
+            />
+          </Layout.Section>
+          <Layout.Section variant="oneThird">
+            <RangeSlider
+              label="Maximum of popups"
+              value={input.maxPopsDisplay}
+              onChange={value => handleChangeInput('maxPopsDisplay', value)}
+              output
+              helpText="The maximum number of popups are allowed. Maximum number is 80"
+              min={1}
+              max={80}
+              suffix={
+                <Box maxWidth="140px">
+                  <TextField
+                    value={input.maxPopsDisplay}
+                    type="number"
+                    min={1}
+                    max={80}
+                    onChange={value => handleChangeInput('maxPopsDisplay', value)}
+                    suffix={'pop(s)'}
+                  />
+                </Box>
+              }
+            />
           </Layout.Section>
         </Layout>
       </FormLayout>
