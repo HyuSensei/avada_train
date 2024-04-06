@@ -6,11 +6,11 @@ import {
   ResourceList,
   Text,
   InlineStack,
-  Box,
+  Layout,
   LegacyCard
 } from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
-import useFetchApi from '@assets/hooks/api/useFetchApi';
+import usePaginate from '@assets/hooks/api/usePaginate';
 import {formatDateOnly} from '@assets/helpers/utils/formatFullTime';
 /**
  * Render a home page for overview
@@ -24,50 +24,7 @@ export default function Notifications() {
     singular: 'notification',
     plural: 'notifications'
   };
-  const [sortValue, setSortValue] = useState('DATE_MODIFIED_DESC');
-
-  const items = [
-    {
-      id: 1,
-      firstName: 'John Doe',
-      city: 'New York',
-      country: 'United States',
-      productName: 'Puffer Jacket With Hidden Hood',
-      timestamp: 'a day ago',
-      productImage:
-        'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTj6DoZBwRbMkXGyBWrWXPtVTWUnqRYa7uNcAUqunH1z7ZGkpRG'
-    },
-    {
-      id: 2,
-      firstName: 'John Doe',
-      city: 'New York',
-      country: 'United States',
-      productName: 'Puffer Jacket With Hidden Hood',
-      timestamp: 'a day ago',
-      productImage:
-        'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTj6DoZBwRbMkXGyBWrWXPtVTWUnqRYa7uNcAUqunH1z7ZGkpRG'
-    },
-    {
-      id: 3,
-      firstName: 'John Doe',
-      city: 'New York',
-      country: 'United States',
-      productName: 'Puffer Jacket With Hidden Hood',
-      timestamp: 'a day ago',
-      productImage:
-        'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTj6DoZBwRbMkXGyBWrWXPtVTWUnqRYa7uNcAUqunH1z7ZGkpRG'
-    },
-    {
-      id: 4,
-      firstName: 'John Doe',
-      city: 'New York',
-      country: 'United States',
-      productName: 'Puffer Jacket With Hidden Hood',
-      timestamp: 'a day ago',
-      productImage:
-        'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTj6DoZBwRbMkXGyBWrWXPtVTWUnqRYa7uNcAUqunH1z7ZGkpRG'
-    }
-  ];
+  const [sortValue, setSortValue] = useState('desc');
 
   const promotedBulkActions = [
     {
@@ -91,8 +48,25 @@ export default function Notifications() {
     }
   ];
 
-  const {data: notifications, loading} = useFetchApi({url: '/notifications'});
-  console.log('notification:', notifications);
+  const {data: notifications, loading, prevPage, nextPage, onQueryChange} = usePaginate({
+    url: '/notifications',
+    defaultLimit: 5,
+    defaultSort: sortValue
+  });
+
+  const nextPageAllow = ({totalPages, currentPage}) => {
+    if (totalPages === currentPage) {
+      return false;
+    }
+    return true;
+  };
+
+  const previousPageAllow = currentPage => {
+    if (currentPage === 1) {
+      return false;
+    }
+    return true;
+  };
 
   const renderItem = item => {
     const {id, firstName, city, country, productName, timestamp, productImage, createdAt} = item;
@@ -107,11 +81,9 @@ export default function Notifications() {
             timestamp={timestamp}
             productImage={productImage}
           />
-          <Box>
-            <Text as="p" fontWeight="medium">
-              From {formatDateOnly(createdAt)}
-            </Text>
-          </Box>
+          <Text as="p" fontWeight="medium">
+            From {formatDateOnly(createdAt)}
+          </Text>
         </InlineStack>
       </ResourceItem>
     );
@@ -119,32 +91,45 @@ export default function Notifications() {
 
   return (
     <Page title="Notifications" subtitle="List of Sales notification from Shopify" fullWidth>
-      <Card>
-        <ResourceList
-          resourceName={resourceName}
-          items={notifications}
-          bulkActions={bulkActions}
-          promotedBulkActions={promotedBulkActions}
-          selectedItems={selectedItems}
-          onSelectionChange={setSelectedItems}
-          sortValue={sortValue}
-          sortOptions={[
-            {label: 'Newest update', value: 'DATE_MODIFIED_DESC'},
-            {label: 'Oldest update', value: 'DATE_MODIFIED_ASC'}
-          ]}
-          onSortChange={selected => {
-            setSortValue(selected);
-            console.log(`Sort option changed to ${selected}.`);
-          }}
-          pagination={{
-            hasNext: true,
-            onNext: () => {}
-          }}
-          loading={loading}
-          renderItem={item => renderItem(item)}
-        />
-      </Card>
-      <LegacyCard.Section></LegacyCard.Section>
+      <Layout>
+        <Layout.Section>
+          <Card>
+            <ResourceList
+              resourceName={resourceName}
+              items={notifications}
+              bulkActions={bulkActions}
+              promotedBulkActions={promotedBulkActions}
+              selectedItems={selectedItems}
+              onSelectionChange={setSelectedItems}
+              sortValue={sortValue}
+              sortOptions={[
+                {label: 'Newest notifications', value: 'desc'},
+                {label: 'Oldest notifications', value: 'asc'}
+              ]}
+              onSortChange={selected => {
+                setSortValue(selected);
+                onQueryChange('sort', selected, true);
+              }}
+              pagination={{
+                hasPrevious: notifications[0]
+                  ? previousPageAllow(notifications[0].currentPage)
+                  : false,
+                hasNext: notifications[0]
+                  ? nextPageAllow({
+                      totalPages: notifications[0].totalPages,
+                      currentPage: notifications[0].currentPage
+                    })
+                  : false,
+                onPrevious: prevPage,
+                onNext: nextPage
+              }}
+              loading={loading}
+              renderItem={item => renderItem(item)}
+            />
+          </Card>
+        </Layout.Section>
+        <LegacyCard.Section></LegacyCard.Section>
+      </Layout>
     </Page>
   );
 }

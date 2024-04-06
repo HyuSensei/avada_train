@@ -8,6 +8,10 @@
 .Avava-SP__Wrapper .Avava-SP__LinkWrapper {
   color: #333;
   width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
 }
 @media screen and (max-width: 575px) {
   .Avava-SP__Wrapper {
@@ -60,7 +64,6 @@
   line-height: 69px;
   background-size: cover;
   background-position: center;
-  margin-top: 10px;
 }
 .Avava-SP__Wrapper .Avada-SP__Content {
   display: inline-block;

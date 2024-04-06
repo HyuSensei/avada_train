@@ -41,10 +41,8 @@ app.use(
     afterInstall: async ctx => {
       try {
         const shopifyDomain = ctx.state.shopify.shop;
-        const [shop, data] = await Promise.all([
-          getShopByShopifyDomain(shopifyDomain),
-          getNotificationList({shopifyDomain, accessToken: shop.accessToken})
-        ]);
+        const shop = await getShopByShopifyDomain(shopifyDomain);
+        const data = await getNotificationList({shopifyDomain, accessToken: shop.accessToken});
         await Promise.all([
           createWebhook({shopifyDomain, shop}),
           createDefaultSetting({shopId: shop.id, shopifyDomain}),

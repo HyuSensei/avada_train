@@ -1,6 +1,11 @@
 import {getByShopId, updateSetting} from '../repositories/settingRepository';
 import {getCurrentShop} from '../helpers/auth';
 
+/**
+ *
+ * @param {*} ctx
+ * @returns {Promise<{success:boolean,message:string,data:*{}}>}
+ */
 export const getSettingByShopId = async ctx => {
   try {
     const shopID = getCurrentShop(ctx);
@@ -21,6 +26,11 @@ export const getSettingByShopId = async ctx => {
   }
 };
 
+/**
+ *
+ * @param {*} ctx
+ * @returns {Promise<{success:boolean,message:string} | {success:boolean,error:*}>}
+ */
 export const updateSettingByShopId = async ctx => {
   try {
     const data = ctx.req.body;

@@ -13,7 +13,7 @@ export default function apiRouter(isEmbed = false) {
   router.get('/shops', shopController.getUserShops);
   router.get('/subscription', subscriptionController.getSubscription);
   router.get('/appNews', appNewsController.getList);
-  router.get('/notifications', notificationController.getNotification);
+  router.get('/notifications', notificationController.getNotifications);
   router.get('/settings', settingController.getSettingByShopId);
   router.put('/settings', settingController.updateSettingByShopId);
   return router;

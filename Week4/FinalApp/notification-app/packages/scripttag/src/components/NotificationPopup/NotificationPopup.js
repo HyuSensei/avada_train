@@ -11,14 +11,12 @@ const NotificationPopup = ({
   setting,
   onClose
 }) => {
-  const classTitle = setting.truncateProductName
-    ? 'Avada-SP__Subtitle__Hide'
-    : 'Avada-SP__Subtitle';
+  const classTitle = setting.truncateProductName ? 'Avada-SP__Subtitle-Hide' : 'Avada-SP__Subtitle';
   return (
-    <div className={`Avava-SP__Wrapper Avava-SP__${setting.position} fadeInUp animated`}>
+    <div className={`Avava-SP__Wrapper Avava-SP__${setting.position}  animated`}>
       <div className="Avava-SP__Inner">
         <div className="Avava-SP__Container">
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div style={{display: 'flex', justifyContent: 'space-around'}}>
             <a href="" className={'Avava-SP__LinkWrapper'}>
               <div
                 className="Avava-SP__Image"
@@ -39,7 +37,10 @@ const NotificationPopup = ({
                 </div>
               </div>
             </a>
-            <div onClick={onClose} style={{fontWeight: 'bold', cursor: 'pointer'}}>
+            <div
+              onClick={onClose}
+              style={{fontWeight: 'bold', cursor: 'pointer', marginRight: '10px'}}
+            >
               x
             </div>
           </div>

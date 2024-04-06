@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, Select, TextField, FormLayout} from '@shopify/polaris';
+import {Text, Select, TextField, FormLayout, Card} from '@shopify/polaris';
 
 export default function Trigger({input, handleChangeInput, showIncludedUrls}) {
   const options = [
@@ -7,7 +7,7 @@ export default function Trigger({input, handleChangeInput, showIncludedUrls}) {
     {label: 'Specific pages', value: 'specific'}
   ];
   return (
-    <>
+    <Card>
       <FormLayout>
         <Text variant="headingSm" as="h6">
           PAGES RESTRICTION
@@ -37,6 +37,6 @@ export default function Trigger({input, handleChangeInput, showIncludedUrls}) {
           autoComplete="off"
         />
       </FormLayout>
-    </>
+    </Card>
   );
 }

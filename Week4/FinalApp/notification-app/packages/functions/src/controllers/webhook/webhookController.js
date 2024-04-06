@@ -2,6 +2,11 @@ import {getShopByShopifyDomain} from '@avada/core';
 import {getNotificationItem} from '../../services/shopifyApiService';
 import {saveNotificationItem} from '../../repositories/notificationRepository';
 
+/**
+ *
+ * @param {*} ctx
+ * @returns {Promise<{success:boolean} | {success:boolean,error:*}>}
+ */
 export const listenNewOrder = async ctx => {
   try {
     console.log('run order webhook');

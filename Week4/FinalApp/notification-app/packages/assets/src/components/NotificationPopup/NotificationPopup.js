@@ -16,7 +16,7 @@ const NotificationPopup = ({
       <div className="Avava-SP__Inner">
         <div className="Avava-SP__Container">
           <InlineStack align="space-between">
-            <a href="#" className={'Avava-SP__LinkWrapper'}>
+            <a href="" className={'Avava-SP__LinkWrapper'}>
               <div
                 className="Avava-SP__Image"
                 style={{
